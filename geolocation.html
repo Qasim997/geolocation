@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geolocation Capture</title>
+    <script>
+        function sendLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var latitude = position.coords.latitude;
+                    var longitude = position.coords.longitude;
+                    var identifier = new URLSearchParams(window.location.search).get('identifier');
+                    
+                    // Save location data to SharePoint list via a form
+                    var form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = 'https://forms.office.com/Pages/ResponsePage.aspx?id=YOUR_FORM_ID';
+                    
+                    var latInput = document.createElement('input');
+                    latInput.type = 'hidden';
+                    latInput.name = 'latitude';
+                    latInput.value = latitude;
+                    form.appendChild(latInput);
+                    
+                    var longInput = document.createElement('input');
+                    longInput.type = 'hidden';
+                    longInput.name = 'longitude';
+                    longInput.value = longitude;
+                    form.appendChild(longInput);
+                    
+                    var idInput = document.createElement('input');
+                    idInput.type = 'hidden';
+                    idInput.name = 'identifier';
+                    idInput.value = identifier;
+                    form.appendChild(idInput);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                });
+            } else {
+                document.getElementById("status").innerText = "Geolocation is not supported by this browser.";
+            }
+        }
+        window.onload = sendLocation;
+    </script>
+</head>
+<body>
+    <h1>Sending Your Location...</h1>
+    <p id="status">Please wait.</p>
+</body>
+</html>
